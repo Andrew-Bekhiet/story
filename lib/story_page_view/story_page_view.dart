@@ -35,7 +35,10 @@ class StoryPageView extends StatefulWidget {
         const EdgeInsets.symmetric(vertical: 32, horizontal: 8),
     this.backgroundColor = Colors.black,
     this.indicatorAnimationController,
+    this.showIndicators = true,
   }) : super(key: key);
+
+  final bool showIndicators;
 
   /// Function to build story content
   final _StoryItemBuilder itemBuilder;
@@ -140,6 +143,7 @@ class _StoryPageViewState extends State<StoryPageView> {
                   indicatorPadding: widget.indicatorPadding,
                   indicatorAnimationController:
                       widget.indicatorAnimationController,
+                  showIndicators: widget.showIndicators,
                 ),
                 if (isPaging && !isLeaving)
                   Positioned.fill(
@@ -172,6 +176,7 @@ class _StoryPageFrame extends StatefulWidget {
     required this.indicatorDuration,
     required this.indicatorPadding,
     required this.indicatorAnimationController,
+    this.showIndicators = true,
   }) : super(key: key);
   final int storyLength;
   final int initialStoryIndex;
@@ -181,6 +186,7 @@ class _StoryPageFrame extends StatefulWidget {
   final _StoryItemBuilder itemBuilder;
   final _StoryItemBuilder? gestureItemBuilder;
   final Duration indicatorDuration;
+  final bool showIndicators;
   final EdgeInsetsGeometry indicatorPadding;
   final ValueNotifier<IndicatorAnimationCommand>? indicatorAnimationController;
 
@@ -199,6 +205,7 @@ class _StoryPageFrame extends StatefulWidget {
     required EdgeInsetsGeometry indicatorPadding,
     required ValueNotifier<IndicatorAnimationCommand>?
         indicatorAnimationController,
+    bool showIndicators = true,
   }) {
     return MultiProvider(
       providers: [
@@ -227,17 +234,17 @@ class _StoryPageFrame extends StatefulWidget {
         ),
       ],
       child: _StoryPageFrame._(
-        storyLength: storyLength,
-        initialStoryIndex: initialStoryIndex,
-        pageIndex: pageIndex,
-        isCurrentPage: isCurrentPage,
-        isPaging: isPaging,
-        itemBuilder: itemBuilder,
-        gestureItemBuilder: gestureItemBuilder,
-        indicatorDuration: indicatorDuration,
-        indicatorPadding: indicatorPadding,
-        indicatorAnimationController: indicatorAnimationController,
-      ),
+          storyLength: storyLength,
+          initialStoryIndex: initialStoryIndex,
+          pageIndex: pageIndex,
+          isCurrentPage: isCurrentPage,
+          isPaging: isPaging,
+          itemBuilder: itemBuilder,
+          gestureItemBuilder: gestureItemBuilder,
+          indicatorDuration: indicatorDuration,
+          indicatorPadding: indicatorPadding,
+          indicatorAnimationController: indicatorAnimationController,
+          showIndicators: showIndicators),
     );
   }
 
@@ -321,13 +328,14 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
             ],
           ),
         ),
-        Indicators(
-          storyLength: widget.storyLength,
-          animationController: animationController,
-          isCurrentPage: widget.isCurrentPage,
-          isPaging: widget.isPaging,
-          padding: widget.indicatorPadding,
-        ),
+        if (widget.showIndicators)
+          Indicators(
+            storyLength: widget.storyLength,
+            animationController: animationController,
+            isCurrentPage: widget.isCurrentPage,
+            isPaging: widget.isPaging,
+            padding: widget.indicatorPadding,
+          ),
         Gestures(
           animationController: animationController,
         ),
